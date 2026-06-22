@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-AuthService.Domain-ab53e488-568d-4497-b4c7-b6d9bd899679</UserSecretsId>
+    </PropertyGroup>
+</Project>

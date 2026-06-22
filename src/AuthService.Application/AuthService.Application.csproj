@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-AuthService.Application-6b06bff8-cc17-4008-93d8-1987bc7cedcb</UserSecretsId>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\AuthService.Domain\AuthService.Domain.csproj" />
+    </ItemGroup>
+</Project>
