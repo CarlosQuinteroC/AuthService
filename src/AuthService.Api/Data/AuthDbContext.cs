@@ -19,5 +19,10 @@ public class AuthDbContext : DbContext
     {
         modelBuilder.Entity<UserRole>()
             .HasKey(ur => new { ur.UserId, ur.RoleId });
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email).IsUnique();
+        modelBuilder.Entity<Role>()
+            .HasIndex(r => r.Name).IsUnique();
     }
 }
