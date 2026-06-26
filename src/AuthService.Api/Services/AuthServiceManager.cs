@@ -25,16 +25,33 @@ public class AuthServiceManager
         _logger = logger;
     }
     
-    public async Task<RegisterResponse> RegisterAsync  (RegisterRequest)
+    public async Task<RegisterResponse> RegisterAsync  (RegisterRequest request)
     {
+        _logger.LogInformation("---------------------------------------------------------------------------------------------------");
+        _logger.LogInformation("Register user Flow Triggered");
+        // Validate Unique and valid email
+        if (request.Email == "")
+        {
+            _logger.LogInformation("Email Property cannot be empty");
+            throw new Exception("Email Property cannot be empty");
+        }
+        // trim email
+        request.Email = request.Email.Trim();
+        var users = _context.Users.Where(u => u.Email == request.Email).FirstOrDefault();
+        if (users == null)
+        {
+            _logger.LogInformation("Users not found");
+            throw new Exception("Users not found");
+        }
+
         return new RegisterResponse
         {
             Id = Guid.NewGuid(),
-            FirstName = RegisterRequest.FirstName,
-            LastName = RegisterRequest.LastName,
-            Email = RegisterRequest.Email,
-            PhoneNumber = RegisterRequest.PhoneNumber,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            PhoneNumber = request.PhoneNumber,
             CreatedAt = DateTime.UtcNow
-        }
+        };
     }
 }
