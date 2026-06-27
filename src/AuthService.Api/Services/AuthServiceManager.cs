@@ -80,8 +80,6 @@ public class AuthServiceManager
             _logger.LogInformation("Role {RoleName} created",  userRole.Name);
         }
         
-        
-        
         // assign role to user
         var userRoleAssignment = new UserRole
         {
