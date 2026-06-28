@@ -49,60 +49,69 @@ public class AuthServiceManager
             _logger.LogInformation("User with email {email} already exist", normalizedEmail);
             throw new Exception("User with email already exist");
         }
-        
-        // Create user in memory
-        var user = new User
+
+        try
         {
-            Id = Guid.CreateVersion7(),
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = normalizedEmail,
-            PasswordHash = "HashedPassword",
-            PhoneNumber = !string.IsNullOrWhiteSpace(request.PhoneNumber) ? request.PhoneNumber : null,
-        };
-        
-        // Hash the password
-        user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
-        
-        _context.Users.Add(user);
-        
-        // Get roles and find user role
-        var userRole  = await _context.Roles.Where(r => r.Name == "user").FirstOrDefaultAsync();
-        if (userRole  == null)
-        {
-            _logger.LogInformation("Role with Name User does not exist, creating role");
-            userRole = new Role
+            // Create user in memory
+            var user = new User
             {
                 Id = Guid.CreateVersion7(),
-                Name = "user"
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = normalizedEmail,
+                PasswordHash = "HashedPassword",
+                PhoneNumber = !string.IsNullOrWhiteSpace(request.PhoneNumber) ? request.PhoneNumber : null,
             };
-            _context.Roles.Add(userRole);
-            _logger.LogInformation("Role {RoleName} created",  userRole.Name);
-        }
         
-        // assign role to user
-        var userRoleAssignment = new UserRole
-        {
-            UserId = user.Id,
-            RoleId = userRole.Id
-        };
+            // Hash the password
+            user.PasswordHash = _passwordHasher.HashPassword(user, request.Password);
         
-        _context.UserRoles.Add(userRoleAssignment);
+            _context.Users.Add(user);
         
-        _logger.LogInformation("Creating user with name {FirstName} {LastName} and email {Email}", user.FirstName, user.LastName, user.Email);
+            // Get roles and find user role
+            var userRole  = await _context.Roles.Where(r => r.Name == "user").FirstOrDefaultAsync();
+            if (userRole  == null)
+            {
+                _logger.LogInformation("Role with Name User does not exist, creating role");
+                userRole = new Role
+                {
+                    Id = Guid.CreateVersion7(),
+                    Name = "user"
+                };
+                _context.Roles.Add(userRole);
+                _logger.LogInformation("Role {RoleName} created",  userRole.Name);
+            }
         
-        // Save in database
-        await _context.SaveChangesAsync();
+            // assign role to user
+            var userRoleAssignment = new UserRole
+            {
+                UserId = user.Id,
+                RoleId = userRole.Id
+            };
+        
+            _context.UserRoles.Add(userRoleAssignment);
+        
+            _logger.LogInformation("Creating user with name {FirstName} {LastName} and email {Email}", user.FirstName, user.LastName, user.Email);
+        
+            // Save in database
+            await _context.SaveChangesAsync();
 
-        return new RegisterResponse
+            return new RegisterResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                CreatedAt = user.CreatedAt
+            };
+        }
+        catch (Exception ex)
         {
-            Id = user.Id,
-            Email = user.Email,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            PhoneNumber = user.PhoneNumber,
-            CreatedAt = user.CreatedAt
-        };
+            _logger.LogError(ex, "Error occurred while checking if user with email {email} exists", normalizedEmail);
+            throw;
+        }
+       
 
     }
 }
