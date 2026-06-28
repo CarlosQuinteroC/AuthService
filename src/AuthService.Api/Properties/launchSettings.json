@@ -3,9 +3,11 @@
   "profiles": {
     "AuthService.Api": {
       "commandName": "Project",
+      "launchBrowser": true,
       "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:5000;https://localhost:5001",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
